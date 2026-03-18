@@ -85,9 +85,14 @@ with tab1:
     if not pending:
         st.info("대기 중인 신청이 없습니다.")
     else:
+        # 일괄 승인 영역
+        selected = []
         for uid, u in pending.items():
             with st.container(border=True):
-                c1, c2, c3 = st.columns([4, 1, 1])
+                c0, c1, c2, c3 = st.columns([0.5, 4, 1, 1])
+                checked = c0.checkbox("", key=f"chk_{uid}")
+                if checked:
+                    selected.append(uid)
                 name_str = f"{u.get('name', '-')} / {u.get('full_name', '-')}"
                 c1.markdown(f"**{uid}** | 성함: {name_str}  \n신청일: {u['registered_at']}")
                 if c2.button("✅ 승인", key=f"approve_{uid}", use_container_width=True):
@@ -101,6 +106,20 @@ with tab1:
                     save_users(users)
                     st.warning(f"{uid} 거절됨")
                     st.rerun()
+
+        st.divider()
+        col_bulk, col_info = st.columns([1, 3])
+        if col_bulk.button("✅ 선택 일괄 승인", type="primary", use_container_width=True, disabled=len(selected) == 0):
+            for uid in selected:
+                users[uid]["status"] = "approved"
+                users[uid]["approved_at"] = today.isoformat()
+            save_users(users)
+            st.success(f"{len(selected)}명 일괄 승인 완료: {', '.join(selected)}")
+            st.rerun()
+        if selected:
+            col_info.info(f"선택된 사용자: {len(selected)}명 ({', '.join(selected)})")
+        else:
+            col_info.caption("체크박스로 사용자를 선택하면 일괄 승인할 수 있습니다.")
 
 # ── 승인된 사용자 탭 ──
 with tab2:
