@@ -236,7 +236,9 @@ if st.session_state['admin_mode']:
                 status_str = "미시작"
             rows.append({"아이디": uid, "성함": u.get("name", "-"),
                          "연락처": u.get("full_name", "-"), "승인일": u.get("approved_at", "-"),
-                         "체험시작": trial_start or "미시작", "체험상태": status_str})
+                         "체험시작": trial_start or "미시작",
+                         "체험만료일": str(datetime.fromisoformat(trial_start).date() + timedelta(days=TRIAL_DAYS)) if trial_start else "미시작",
+                         "체험상태": status_str})
         st.dataframe(pd.DataFrame(rows), use_container_width=True)
 
         st.divider()
