@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 # -----------------------------------------------------------
 # 1. 페이지 설정
 # -----------------------------------------------------------
-st.set_page_config(page_title="쇼크트리 훈프로 통합 솔루션", layout="wide")
+st.set_page_config(page_title="쇼크트리 훈프로 광고 분석기 체험판(7일)", layout="wide")
 
 # -----------------------------------------------------------
 # 설정값
@@ -103,7 +103,7 @@ for key, default in [('authenticated', False), ('current_user', None),
 # 로그인/가입 화면
 # -----------------------------------------------------------
 if not st.session_state['authenticated'] and not st.session_state['admin_mode']:
-    st.title("🔐 쇼크트리 훈프로 통합 솔루션")
+    st.title("🔐 쇼크트리 훈프로 광고 분석기 체험판(7일)")
 
     tab_register, tab_login, tab_admin = st.tabs(["📝 가입 신청", "🔑 로그인", "🛠️ 관리자"])
 
