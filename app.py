@@ -13,8 +13,8 @@ st.set_page_config(page_title="쇼크트리 훈프로 통합 솔루션", layout=
 # 설정값
 # -----------------------------------------------------------
 USERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.json")
-TRIAL_DAYS = 5
-ADMIN_PASSWORD = "admin2026"  # 관리자 패널 비밀번호 (별도 관리)
+TRIAL_DAYS = 7
+ADMIN_PASSWORD = "3805"  # 관리자 패널 비밀번호 (별도 관리)
 
 # -----------------------------------------------------------
 # 사용자 데이터 관리 함수
@@ -29,11 +29,15 @@ def save_users(data):
     with open(USERS_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-def register_user(user_id):
+def register_user(user_id, name, full_name):
     """신규 가입 신청. 반환: (성공여부, 메시지)"""
     uid = user_id.strip().lower()
     if not uid:
         return False, "아이디를 입력해주세요."
+    if not name.strip():
+        return False, "이름을 입력해주세요."
+    if not full_name.strip():
+        return False, "성함을 입력해주세요."
     users = load_users()
     if uid in users:
         status = users[uid]["status"]
@@ -45,6 +49,8 @@ def register_user(user_id):
             return False, "관리자에 의해 거절된 아이디입니다. 관리자에게 문의해주세요."
     users[uid] = {
         "status": "pending",
+        "name": name.strip(),
+        "full_name": full_name.strip(),
         "registered_at": datetime.now().date().isoformat(),
         "trial_start": None,
         "approved_at": None
@@ -99,7 +105,7 @@ for key, default in [('authenticated', False), ('current_user', None),
 if not st.session_state['authenticated'] and not st.session_state['admin_mode']:
     st.title("🔐 쇼크트리 훈프로 통합 솔루션")
 
-    tab_login, tab_register, tab_admin = st.tabs(["🔑 로그인", "📝 가입 신청", "🛠️ 관리자"])
+    tab_register, tab_login, tab_admin = st.tabs(["📝 가입 신청", "🔑 로그인", "🛠️ 관리자"])
 
     # ── 로그인 탭 ──
     with tab_login:
@@ -134,7 +140,7 @@ if not st.session_state['authenticated'] and not st.session_state['admin_mode']:
     # ── 가입 신청 탭 ──
     with tab_register:
         st.subheader("가입 신청")
-        st.info("아이디를 입력하면 관리자에게 승인 요청이 전달됩니다. 승인 후 로그인이 가능합니다.")
+        st.info("아래 정보를 입력하면 관리자에게 승인 요청이 전달됩니다. 승인 후 로그인이 가능합니다.")
         reg_msg = st.session_state.get("reg_msg", "")
         if reg_msg:
             if st.session_state.get("reg_ok"):
@@ -143,9 +149,11 @@ if not st.session_state['authenticated'] and not st.session_state['admin_mode']:
                 st.error(f"❌ {reg_msg}")
 
         with st.form("register_form"):
-            new_uid = st.text_input("사용할 아이디", placeholder="예: hong_gildong")
+            new_uid = st.text_input("아이디", placeholder="예: hong_gildong")
+            new_name = st.text_input("이름", placeholder="예: 길동")
+            new_fullname = st.text_input("성함", placeholder="예: 홍길동")
             if st.form_submit_button("가입 신청하기"):
-                ok, msg = register_user(new_uid)
+                ok, msg = register_user(new_uid, new_name, new_fullname)
                 st.session_state["reg_msg"] = msg
                 st.session_state["reg_ok"] = ok
                 st.rerun()
