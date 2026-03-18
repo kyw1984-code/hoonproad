@@ -234,7 +234,8 @@ if st.session_state['admin_mode']:
                 status_str = f"잔여 {remaining}일" if remaining > 0 else "만료"
             else:
                 status_str = "미시작"
-            rows.append({"아이디": uid, "승인일": u.get("approved_at", "-"),
+            rows.append({"아이디": uid, "성함": u.get("name", "-"),
+                         "연락처": u.get("full_name", "-"), "승인일": u.get("approved_at", "-"),
                          "체험시작": trial_start or "미시작", "체험상태": status_str})
         st.dataframe(pd.DataFrame(rows), use_container_width=True)
 
