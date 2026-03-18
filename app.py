@@ -152,10 +152,23 @@ if not st.session_state['authenticated'] and not st.session_state['admin_mode']:
             new_uid = st.text_input("아이디", placeholder="예: hong_gildong")
             new_name = st.text_input("성함", placeholder="예: 홍길동")
             new_fullname = st.text_input("연락처", placeholder="예: 010-1234-5678")
+            st.markdown("""
+**[개인정보 수집 및 이용 동의]**
+
+- **수집 항목**: 아이디, 성함, 연락처
+- **수집 목적**: 서비스 이용 승인 및 회원 관리
+- **보유 기간**: 서비스 이용 종료 후 즉시 파기
+- 위 개인정보 수집·이용에 동의하지 않으실 경우 서비스 이용이 제한될 수 있습니다.
+""")
+            agree = st.checkbox("개인정보 수집 및 이용에 동의합니다. (필수)")
             if st.form_submit_button("가입 신청하기"):
-                ok, msg = register_user(new_uid, new_name, new_fullname)
-                st.session_state["reg_msg"] = msg
-                st.session_state["reg_ok"] = ok
+                if not agree:
+                    st.session_state["reg_msg"] = "개인정보 수집 및 이용에 동의해주세요."
+                    st.session_state["reg_ok"] = False
+                else:
+                    ok, msg = register_user(new_uid, new_name, new_fullname)
+                    st.session_state["reg_msg"] = msg
+                    st.session_state["reg_ok"] = ok
                 st.rerun()
 
     # ── 관리자 탭 ──
