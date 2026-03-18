@@ -150,8 +150,8 @@ if not st.session_state['authenticated'] and not st.session_state['admin_mode']:
 
         with st.form("register_form"):
             new_uid = st.text_input("아이디", placeholder="예: hong_gildong")
-            new_name = st.text_input("이름", placeholder="예: 길동")
-            new_fullname = st.text_input("성함", placeholder="예: 홍길동")
+            new_name = st.text_input("성함", placeholder="예: 홍길동")
+            new_fullname = st.text_input("연락처", placeholder="예: 010-1234-5678")
             if st.form_submit_button("가입 신청하기"):
                 ok, msg = register_user(new_uid, new_name, new_fullname)
                 st.session_state["reg_msg"] = msg

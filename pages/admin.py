@@ -88,8 +88,8 @@ with tab1:
         for uid, u in pending.items():
             with st.container(border=True):
                 c1, c2, c3 = st.columns([4, 1, 1])
-                name_str = f"{u.get('full_name', '-')} ({u.get('name', '-')})"
-                c1.markdown(f"**{uid}** | {name_str}  \n신청일: {u['registered_at']}")
+                name_str = f"{u.get('name', '-')} / {u.get('full_name', '-')}"
+                c1.markdown(f"**{uid}** | 성함: {name_str}  \n신청일: {u['registered_at']}")
                 if c2.button("✅ 승인", key=f"approve_{uid}", use_container_width=True):
                     users[uid]["status"] = "approved"
                     users[uid]["approved_at"] = today.isoformat()
@@ -122,8 +122,8 @@ with tab2:
                 status_str = "미시작 (아직 로그인 안 함)"
             rows.append({
                 "아이디": uid,
-                "성함": u.get("full_name", "-"),
-                "이름": u.get("name", "-"),
+                "성함": u.get("name", "-"),
+                "연락처": u.get("full_name", "-"),
                 "승인일": u.get("approved_at", "-"),
                 "체험 시작일": trial_start or "-",
                 "체험 만료일": str(expire_date),
@@ -167,8 +167,8 @@ with tab3:
     if rejected:
         for uid, u in rejected.items():
             c1, c2 = st.columns([5, 1])
-            name_str = f"{u.get('full_name', '-')} ({u.get('name', '-')})"
-            c1.write(f"**{uid}** | {name_str} (신청일: {u['registered_at']})")
+            name_str = f"{u.get('name', '-')} / {u.get('full_name', '-')}"
+            c1.write(f"**{uid}** | 성함: {name_str} (신청일: {u['registered_at']})")
             if c2.button("복구", key=f"restore_{uid}"):
                 users[uid]["status"] = "pending"
                 save_users(users)
